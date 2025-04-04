@@ -237,6 +237,10 @@ func (s *backendAdapter[T]) ClearAll(ctx context.Context) error {
 }
 
 func (s *backendAdapter[T]) GetOrSetWithLock(ctx context.Context, key string, getter func(context.Context, string) (T, error)) (T, error) {
+	return s.GetOrSetWithLockEx(ctx, key, getter, s.options.DefaultKeyExpiry)
+}
+
+func (s *backendAdapter[T]) GetOrSetWithLockEx(ctx context.Context, key string, getter func(context.Context, string) (T, error), ttl time.Duration) (T, error) {
 	var v T
 	if s.anyStore == nil {
 		return v, ErrBackendAdapterNil
@@ -254,7 +258,7 @@ func (s *backendAdapter[T]) GetOrSetWithLock(ctx context.Context, key string, ge
 			return Serialize(bv)
 		}
 
-		serialized, err := byteStore.GetOrSetWithLock(ctx, key, g)
+		serialized, err := byteStore.GetOrSetWithLockEx(ctx, key, g, ttl)
 		if err != nil {
 			return v, err
 		}
@@ -274,7 +278,7 @@ func (s *backendAdapter[T]) GetOrSetWithLock(ctx context.Context, key string, ge
 			return v, nil
 		}
 
-		bv, err := s.anyStore.GetOrSetWithLock(ctx, key, g)
+		bv, err := s.anyStore.GetOrSetWithLockEx(ctx, key, g, ttl)
 		if err != nil {
 			return v, err
 		}
@@ -284,12 +288,6 @@ func (s *backendAdapter[T]) GetOrSetWithLock(ctx context.Context, key string, ge
 		}
 		return v, nil
 	}
-}
-
-func (s *backendAdapter[T]) GetOrSetWithLockEx(ctx context.Context, key string, getter func(context.Context, string) (T, error), ttl time.Duration) (T, error) {
-	// return s.backend.GetOrSetWithLockEx(ctx, key, getter, ttl)
-	var v T
-	return v, nil
 }
 
 func Serialize[V any](value V) ([]byte, error) {
