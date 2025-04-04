@@ -14,7 +14,7 @@ type Backend interface {
 func OpenStore[T any](backend Backend, opts ...StoreOptions) Store[T] {
 	options := backend.Options()
 	if len(opts) > 0 {
-		options = opts[0]
+		options = ApplyOptions(opts...)
 	}
 
 	store, ok := backend.(Store[any])
