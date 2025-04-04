@@ -19,6 +19,9 @@ type Store[V any] interface {
 	// Name returns the name of the store.
 	Name() string
 
+	// Options returns the options for the store.
+	Options() StoreOptions
+
 	// Returns true if the key exists.
 	Exists(ctx context.Context, key string) (bool, error)
 
@@ -64,27 +67,15 @@ type Store[V any] interface {
 	GetOrSetWithLockEx(ctx context.Context, key string, getter func(context.Context, string) (V, error), ttl time.Duration) (V, error)
 }
 
-// TODO rename to StoreSweeper ..? and SweepExpired() .. and what is this "Every" thing .. weird
-// this is used by gcstorage .. check ..
-// also, we'll rename gcstore to just gcloudcache
-// type StoreCleaner interface {
-// 	// CleanExpiredEvery cleans expired keys every d duration.
-// 	// If onError is not nil, it will be called when an error occurs.
-// 	CleanExpiredEvery(ctx context.Context, d time.Duration, onError func(err error))
-// }
-
 type ByteStoreGetter interface {
 	ByteStore() Store[[]byte]
 }
 
-// type ByteStore interface {
-// 	Store[[]byte]
-// 	ByteSerializer
-// }
-
-// type Serializer[T any] interface {
-// 	Serialize(value any) (T, error)
-// 	Deserialize(data []byte) (T, error)
-// }
-
-// type ByteSerializer Serializer[[]byte]
+type StoreSweeper interface {
+	// DeleteExpiredEvery cleans expired keys every d duration.
+	// If onError is not nil, it will be called when an error occurs.
+	//
+	// NOTE: in most cases this is not needed, but for certain stores
+	// we need to do this manually.
+	DeleteExpiredEvery(ctx context.Context, d time.Duration, onError func(err error))
+}

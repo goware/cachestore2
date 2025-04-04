@@ -15,17 +15,16 @@ type Config struct {
 	cachestore.StoreOptions
 }
 
-// TODOXXX..
-// func (c *Config) Apply(options *cachestore.StoreOptions) {
-// 	c.StoreOptions.Apply(options)
-// }
-
 func New[V any]() (cachestore.Store[V], error) {
 	return &NoopCache[V]{}, nil
 }
 
 func (s *NoopCache[V]) Name() string {
 	return "noopcache"
+}
+
+func (s *NoopCache[V]) Options() cachestore.StoreOptions {
+	return cachestore.StoreOptions{}
 }
 
 func (s *NoopCache[V]) Exists(ctx context.Context, key string) (bool, error) {

@@ -39,6 +39,10 @@ func (cs *composeStore[V]) Name() string {
 	return cs.name
 }
 
+func (cs *composeStore[V]) Options() StoreOptions {
+	return cs.stores[0].Options()
+}
+
 func (cs *composeStore[V]) Exists(ctx context.Context, key string) (bool, error) {
 	for _, s := range cs.stores {
 		exists, err := s.Exists(ctx, key)
@@ -138,7 +142,7 @@ func (cs *composeStore[V]) BatchGet(ctx context.Context, keys []string) ([]V, []
 			return false, err
 		}
 
-		// todo, check all exists, etc..
+		// todo, check all exists, etc.....
 		for i, e := range exists {
 			if e {
 				fout[idx[i]] = out[i]

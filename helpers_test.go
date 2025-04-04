@@ -24,6 +24,10 @@ func (s *MockStore[V]) Name() string {
 	return "mockcache"
 }
 
+func (s *MockStore[V]) Options() cachestore.StoreOptions {
+	return cachestore.StoreOptions{}
+}
+
 func (s *MockStore[V]) Set(ctx context.Context, key string, value V) error {
 	s.store[key] = value
 	return nil
