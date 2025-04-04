@@ -12,22 +12,23 @@ type Backend interface {
 }
 
 func OpenStore[T any](backend Backend, opts ...StoreOptions) Store[T] {
+	options := backend.Options()
+	if len(opts) > 0 {
+		options = opts[0]
+	}
+
 	store, ok := backend.(Store[any])
 	if !ok {
 		// NOTE: we return a nil store here, so that the caller can
 		// check if the store is nil and return an error. Alternatively,
 		// we could update OpenStore() to return a concrete error, but
 		// this is more flexible.
-		return &backendAdapter[T]{anyStore: nil}
+		return &backendAdapter[T]{anyStore: nil, options: options}
 	} else {
 		// return a new backend adapter which is an adapter for a
 		// Store[any] to a Store[T]. You may also pass in new store
 		// options to the adapter when you open the store from a backend,
 		// or use the existing options on the backend.
-		options := backend.Options()
-		if len(opts) > 0 {
-			options = opts[0]
-		}
 		return newBackendAdapter[T](store, options)
 	}
 }
@@ -60,6 +61,9 @@ func (s *backendAdapter[T]) Options() StoreOptions {
 }
 
 func (s *backendAdapter[T]) Exists(ctx context.Context, key string) (bool, error) {
+	if s.anyStore == nil {
+		return false, ErrBackendAdapterNil
+	}
 	return s.anyStore.Exists(ctx, key)
 }
 
