@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/goware/cachestore"
+	cachestore "github.com/goware/cachestore2"
 )
 
 var _ cachestore.Store[any] = &NoopCache[any]{}
@@ -15,14 +15,9 @@ type Config struct {
 	cachestore.StoreOptions
 }
 
-func (c *Config) Apply(options *cachestore.StoreOptions) {
-	c.StoreOptions.Apply(options)
-}
-
-// func Backend() cachestore.Backend {
-// 	return &Config{
-// 		StoreOptions: cachestore.StoreOptions{},
-// 	}
+// TODOXXX..
+// func (c *Config) Apply(options *cachestore.StoreOptions) {
+// 	c.StoreOptions.Apply(options)
 // }
 
 func New[V any]() (cachestore.Store[V], error) {

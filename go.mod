@@ -1,7 +1,5 @@
-module github.com/goware/cachestore
+module github.com/goware/cachestore2
 
-go 1.21
+go 1.23.0
 
-toolchain go1.22.4
-
-require github.com/davecgh/go-spew v1.1.1
+toolchain go1.24.2

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/goware/cachestore"
+	cachestore "github.com/goware/cachestore2"
 )
 
 func TestCompose(t *testing.T) {
