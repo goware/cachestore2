@@ -16,6 +16,12 @@ var (
 )
 
 type Store[V any] interface {
+	// Name returns the name of the store.
+	Name() string
+
+	// Options returns the options for the store.
+	Options() StoreOptions
+
 	// Returns true if the key exists.
 	Exists(ctx context.Context, key string) (bool, error)
 
@@ -25,10 +31,6 @@ type Store[V any] interface {
 	// SetEx stores the given value associated to the key and sets an expiry ttl
 	// for that key.
 	SetEx(ctx context.Context, key string, value V, ttl time.Duration) error
-
-	// GetEx returns a stored value with ttl
-	// duration is nil when key does not have ttl set
-	GetEx(ctx context.Context, key string) (V, *time.Duration, bool, error)
 
 	// BatchSet sets all the values associated to the given keys.
 	BatchSet(ctx context.Context, keys []string, values []V) error
@@ -65,12 +67,15 @@ type Store[V any] interface {
 	GetOrSetWithLockEx(ctx context.Context, key string, getter func(context.Context, string) (V, error), ttl time.Duration) (V, error)
 }
 
-type StoreCleaner interface {
-	// CleanExpiredEvery cleans expired keys every d duration.
-	// If onError is not nil, it will be called when an error occurs.
-	CleanExpiredEvery(ctx context.Context, d time.Duration, onError func(err error))
+type ByteStoreGetter interface {
+	ByteStore() Store[[]byte]
 }
 
-type Backend interface {
-	Apply(*StoreOptions)
+type StoreSweeper interface {
+	// DeleteExpiredEvery cleans expired keys every d duration.
+	// If onError is not nil, it will be called when an error occurs.
+	//
+	// NOTE: in most cases this is not needed, but for certain stores
+	// we need to do this manually.
+	DeleteExpiredEvery(ctx context.Context, d time.Duration, onError func(err error))
 }
