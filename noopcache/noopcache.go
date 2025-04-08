@@ -11,12 +11,12 @@ var _ cachestore.Store[any] = &NoopCache[any]{}
 
 type NoopCache[V any] struct{}
 
-type Config struct {
-	cachestore.StoreOptions
+func NewBackend() cachestore.Backend {
+	return New[any]()
 }
 
-func New[V any]() (cachestore.Store[V], error) {
-	return &NoopCache[V]{}, nil
+func New[V any]() cachestore.Store[V] {
+	return &NoopCache[V]{}
 }
 
 func (s *NoopCache[V]) Name() string {
