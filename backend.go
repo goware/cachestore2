@@ -189,6 +189,10 @@ func (s *backendAdapter[T]) BatchGet(ctx context.Context, keys []string) ([]T, [
 		}
 
 		for i, v := range bvs {
+			if !exists[i] {
+				continue
+			}
+
 			deserialized, err := Deserialize[T](v)
 			if err != nil {
 				return vs, exists, err
