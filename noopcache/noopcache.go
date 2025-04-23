@@ -53,7 +53,9 @@ func (s *NoopCache[V]) Get(ctx context.Context, key string) (V, bool, error) {
 }
 
 func (s *NoopCache[V]) BatchGet(ctx context.Context, keys []string) ([]V, []bool, error) {
-	return nil, nil, nil
+	out := make([]V, len(keys))
+	exists := make([]bool, len(keys))
+	return out, exists, nil
 }
 
 func (s *NoopCache[V]) Delete(ctx context.Context, key string) error {
