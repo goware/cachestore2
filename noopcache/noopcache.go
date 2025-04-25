@@ -11,7 +11,7 @@ var _ cachestore.Store[any] = &NoopCache[any]{}
 
 type NoopCache[V any] struct{}
 
-func NewBackend() cachestore.Backend {
+func NewBackend() cachestore.BackendAny {
 	return New[any]()
 }
 
