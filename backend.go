@@ -7,11 +7,15 @@ import (
 	"time"
 )
 
-type Backend[T any | []byte] interface {
+type BackendType interface {
+	any | []byte
+}
+
+type Backend[T BackendType] interface {
 	Store[T]
 }
 
-func OpenStore[T any, B any | []byte](backend Backend[B], opts ...StoreOptions) Store[T] {
+func OpenStore[T any, B BackendType](backend Backend[B], opts ...StoreOptions) Store[T] {
 	options := backend.Options()
 	if len(opts) > 0 {
 		options = ApplyOptions(opts...)

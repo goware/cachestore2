@@ -27,7 +27,7 @@ func ComposeStores[V any](stores ...Store[V]) (Store[V], error) {
 	return cs, nil
 }
 
-func ComposeBackends[V any, B any | []byte](backends ...Backend[B]) (Store[V], error) {
+func ComposeBackends[V any, B BackendType](backends ...Backend[B]) (Store[V], error) {
 	stores := make([]Store[V], len(backends))
 	for i, backend := range backends {
 		stores[i] = OpenStore[V](backend)
