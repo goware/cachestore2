@@ -67,10 +67,6 @@ type Store[V any] interface {
 	GetOrSetWithLockEx(ctx context.Context, key string, getter func(context.Context, string) (V, error), ttl time.Duration) (V, error)
 }
 
-type ByteStoreGetter interface {
-	ByteStore() Store[[]byte]
-}
-
 type StoreSweeper interface {
 	// DeleteExpiredEvery cleans expired keys every d duration.
 	// If onError is not nil, it will be called when an error occurs.
