@@ -27,30 +27,10 @@ func ComposeStores[V any](stores ...Store[V]) (Store[V], error) {
 	return cs, nil
 }
 
-func ComposeBackends[V any, B BackendType](backends ...Backend[B]) (Store[V], error) {
+func ComposeBackends[V any](backends ...Backend) (Store[V], error) {
 	stores := make([]Store[V], len(backends))
 	for i, backend := range backends {
 		stores[i] = OpenStore[V](backend)
-	}
-	return ComposeStores(stores...)
-}
-
-// ComposeBackendsMixed allows composing a mix of Backend[any] and Backend[[]byte] together
-func ComposeBackendsMixed[V any](backends ...any) (Store[V], error) {
-	if len(backends) == 0 {
-		return nil, fmt.Errorf("cachestore: attempting to compose with empty backend list")
-	}
-
-	stores := make([]Store[V], len(backends))
-	for i, backend := range backends {
-		switch b := backend.(type) {
-		case Backend[any]:
-			stores[i] = OpenStore[V](b)
-		case Backend[[]byte]:
-			stores[i] = OpenStore[V](b)
-		default:
-			return nil, fmt.Errorf("cachestore: unsupported backend type %T", backend)
-		}
 	}
 	return ComposeStores(stores...)
 }

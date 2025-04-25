@@ -11,11 +11,22 @@ type BackendType interface {
 	any | []byte
 }
 
-type Backend[T BackendType] interface {
-	Store[T]
+type Backend interface {
+	Name() string
+	Options() StoreOptions
 }
 
-func OpenStore[T any, B BackendType](backend Backend[B], opts ...StoreOptions) Store[T] {
+type BackendAny interface {
+	Backend
+	Store[any]
+}
+
+type BackendBytes interface {
+	Backend
+	Store[[]byte]
+}
+
+func OpenStore[T any](backend Backend, opts ...StoreOptions) Store[T] {
 	options := backend.Options()
 	if len(opts) > 0 {
 		options = ApplyOptions(opts...)
