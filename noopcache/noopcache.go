@@ -27,7 +27,7 @@ func (s *NoopCache[V]) Options() cachestore.StoreOptions {
 	return cachestore.StoreOptions{}
 }
 
-func (s *NoopCache[V]) Type() cachestore.BackendType {
+func (s *NoopCache[V]) BackendType() cachestore.BackendType {
 	return cachestore.BackendTypeAny
 }
 

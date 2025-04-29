@@ -28,6 +28,10 @@ func (s *MockStore[V]) Options() cachestore.StoreOptions {
 	return cachestore.StoreOptions{}
 }
 
+func (s *MockStore[V]) BackendType() cachestore.BackendType {
+	return cachestore.BackendTypeAny
+}
+
 func (s *MockStore[V]) Set(ctx context.Context, key string, value V) error {
 	s.store[key] = value
 	return nil

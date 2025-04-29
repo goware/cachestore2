@@ -22,6 +22,9 @@ type Store[V any] interface {
 	// Options returns the options for the store.
 	Options() StoreOptions
 
+	// BackendType returns the type of the backend.
+	BackendType() BackendType
+
 	// Returns true if the key exists.
 	Exists(ctx context.Context, key string) (bool, error)
 

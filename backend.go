@@ -12,6 +12,7 @@ type BackendType string
 const (
 	BackendTypeAny   BackendType = "any"
 	BackendTypeBytes BackendType = "bytes"
+	BackendTypeMixed BackendType = "mixed"
 )
 
 type BackendTypeConstraint interface {
@@ -21,7 +22,7 @@ type BackendTypeConstraint interface {
 type Backend interface {
 	Name() string
 	Options() StoreOptions
-	Type() BackendType
+	BackendType() BackendType
 }
 
 type BackendTyped[T BackendTypeConstraint] interface {
@@ -74,6 +75,10 @@ func (s *backendAdapter[T]) Name() string {
 
 func (s *backendAdapter[T]) Options() StoreOptions {
 	return s.options
+}
+
+func (s *backendAdapter[T]) BackendType() BackendType {
+	return s.anyStore.BackendType()
 }
 
 func (s *backendAdapter[T]) Exists(ctx context.Context, key string) (bool, error) {
@@ -235,6 +240,10 @@ func (s *serializingBackendAdapter[T]) Name() string {
 
 func (s *serializingBackendAdapter[T]) Options() StoreOptions {
 	return s.options
+}
+
+func (s *serializingBackendAdapter[T]) BackendType() BackendType {
+	return s.bytesStore.BackendType()
 }
 
 func (s *serializingBackendAdapter[T]) Exists(ctx context.Context, key string) (bool, error) {

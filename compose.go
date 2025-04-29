@@ -43,6 +43,10 @@ func (cs *composeStore[V]) Options() StoreOptions {
 	return cs.stores[0].Options()
 }
 
+func (cs *composeStore[V]) BackendType() BackendType {
+	return BackendTypeMixed
+}
+
 func (cs *composeStore[V]) Exists(ctx context.Context, key string) (bool, error) {
 	for _, s := range cs.stores {
 		exists, err := s.Exists(ctx, key)
