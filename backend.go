@@ -7,26 +7,29 @@ import (
 	"time"
 )
 
-type BackendType interface {
+type BackendTypeConstraint interface {
 	any | []byte
 }
+
+type BackendType string
+
+const (
+	BackendTypeAny   BackendType = "any"
+	BackendTypeBytes BackendType = "bytes"
+)
 
 type Backend interface {
 	Name() string
 	Options() StoreOptions
+	Type() BackendType
 }
 
-type BackendAny interface {
+type BackendTyped[T BackendTypeConstraint] interface {
 	Backend
-	Store[any]
+	Store[T]
 }
 
-type BackendBytes interface {
-	Backend
-	Store[[]byte]
-}
-
-func OpenStore[T any](backend Backend, opts ...StoreOptions) Store[T] {
+func OpenStore[T BackendTypeConstraint](backend Backend, opts ...StoreOptions) Store[T] {
 	options := backend.Options()
 	if len(opts) > 0 {
 		options = ApplyOptions(opts...)

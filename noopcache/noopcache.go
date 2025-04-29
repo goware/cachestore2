@@ -11,8 +11,8 @@ var _ cachestore.Store[any] = &NoopCache[any]{}
 
 type NoopCache[V any] struct{}
 
-func NewBackend() cachestore.BackendAny {
-	return New[any]()
+func NewBackend() cachestore.BackendTyped[any] {
+	return &NoopCache[any]{}
 }
 
 func New[V any]() cachestore.Store[V] {
@@ -25,6 +25,10 @@ func (s *NoopCache[V]) Name() string {
 
 func (s *NoopCache[V]) Options() cachestore.StoreOptions {
 	return cachestore.StoreOptions{}
+}
+
+func (s *NoopCache[V]) Type() cachestore.BackendType {
+	return cachestore.BackendTypeAny
 }
 
 func (s *NoopCache[V]) Exists(ctx context.Context, key string) (bool, error) {
