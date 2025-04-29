@@ -7,16 +7,16 @@ import (
 	"time"
 )
 
-type BackendTypeConstraint interface {
-	any | []byte
-}
-
 type BackendType string
 
 const (
 	BackendTypeAny   BackendType = "any"
 	BackendTypeBytes BackendType = "bytes"
 )
+
+type BackendTypeConstraint interface {
+	any | []byte
+}
 
 type Backend interface {
 	Name() string
